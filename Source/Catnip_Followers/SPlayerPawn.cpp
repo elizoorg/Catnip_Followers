@@ -3,8 +3,10 @@
 
 #include "SPlayerPawn.h"
 
+#include "SPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -22,7 +24,6 @@ ASPlayerPawn::ASPlayerPawn()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
-
 
 
 
@@ -119,6 +120,52 @@ void ASPlayerPawn::RotateVertical(float AxisValue)
 	
 }
 
+void ASPlayerPawn::MouseLeftPressed()
+{
+
+}
+
+void ASPlayerPawn::MouseRightPressed()
+{
+	
+
+}
+
+void ASPlayerPawn::MouseLeftReleased()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hello World"));
+
+	Cast<ASPlayerController>(GetController())->Handle_Selection(GetSelectedObject());
+}
+
+void ASPlayerPawn::MouseRightReleased()
+{
+	CommandLocation = FVector(1500, 1900, 0);
+	Command();
+}
+
+AActor* ASPlayerPawn::GetSelectedObject()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hello World2"));
+	if(UWorld* World = GetWorld())
+	{
+		FVector WorldLocation, WorldDirection;
+		Cast<ASPlayerController>(GetController())->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+		FVector End = WorldDirection * 1000000.0f + WorldLocation;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+		FHitResult Hit;
+		if(World->LineTraceSingleByChannel(Hit,WorldLocation,End,ECC_Visibility,Params))
+		{
+			if (AActor* HitActor = Hit.GetActor()) 
+			{
+				return HitActor;
+			}
+		}
+	}
+	return nullptr;
+}
+
 // Called every frame
 void ASPlayerPawn::Tick(float DeltaTime)
 {
@@ -153,6 +200,12 @@ void ASPlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction(TEXT("Rotate"), IE_Pressed, this, &ASPlayerPawn::EnableRotate);
 	PlayerInputComponent->BindAction(TEXT("Rotate"), IE_Pressed, this, &ASPlayerPawn::DisableRotate);
 
+	PlayerInputComponent->BindAction(TEXT("LeftMousePressed"), IE_Pressed, this, &ASPlayerPawn::MouseLeftPressed);
+	PlayerInputComponent->BindAction(TEXT("RightMousePressed"), IE_Pressed, this, &ASPlayerPawn::MouseRightPressed);
+
+	PlayerInputComponent->BindAction(TEXT("LeftMousePressed"), IE_Released, this, &ASPlayerPawn::MouseLeftReleased);
+	PlayerInputComponent->BindAction(TEXT("RightMousePressed"), IE_Released, this, &ASPlayerPawn::MouseRightReleased);
+
 
 
 
@@ -175,5 +228,17 @@ void ASPlayerPawn::CameraBounds()
 	TargetLocation = FVector(TargetLocation.X, TargetLocation.Y, 0.f);
 
 
+}
+
+FCommandData ASPlayerPawn::CreateCommandData(const ECommandType Type) const
+{
+	FRotator CommandRotation = FRotator::ZeroRotator;
+	return FCommandData(CommandLocation, CommandRotation, Type);
+
+}
+
+void ASPlayerPawn::Command()
+{
+	Cast<ASPlayerController>(GetController())->CommandSelected(CreateCommandData(ECommandType::MOVE));
 }
 

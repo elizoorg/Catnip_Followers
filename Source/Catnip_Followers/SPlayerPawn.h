@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIData.h"
 #include "GameFramework/Pawn.h"
 #include "SPlayerPawn.generated.h"
 
 
 class UCameraComponent;
 class USpringArmComponent;
+
 
 
 UCLASS()
@@ -53,6 +55,20 @@ protected:
 
 
 
+	UFUNCTION()
+	void MouseLeftPressed();
+
+	UFUNCTION()
+	void MouseRightPressed();
+
+	UFUNCTION()
+	void MouseLeftReleased();
+
+	UFUNCTION()
+	void MouseRightReleased();
+
+	UFUNCTION()
+	AActor* GetSelectedObject();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Settings|Camera");
 	float MoveSpeed = 20.0f;
@@ -100,6 +116,17 @@ private:
 
 	UPROPERTY()
 	bool CanRotate;
+
+
+	UFUNCTION()
+	FCommandData CreateCommandData(const ECommandType Type) const;
+
+	UFUNCTION()
+	void Command();
+
+	UPROPERTY()
+	FVector CommandLocation;
+
 
 
 };
