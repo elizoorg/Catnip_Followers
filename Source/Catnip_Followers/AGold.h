@@ -3,17 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIData.h"
 #include "AResource.h"
+#include "Usable.h"
 #include "AGold.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CATNIP_FOLLOWERS_API AAGold : public AAResource
+class CATNIP_FOLLOWERS_API AAGold : public AAResource,public IUsable
 {
 	GENERATED_BODY()
 public:
 	AAGold();
+
+	virtual ECommandType Use() override;
 	
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIData.h"
 #include "UObject/Interface.h"
 #include "Enums.h"
 #include "StorageInterface.generated.h"
@@ -12,7 +13,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStorageInventoryChange, FInventory, newInventory);
 
 // This class does not need to be modified.
-UINTERFACE()
+UINTERFACE(MinimalAPI)
 class UStorageInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -33,10 +34,12 @@ public:
 	FInventory GetInventory() const { return inventory; }
 	void SetInventory(FInventory val) { inventory = val; }
 
+
+
 	FStorageInventoryChange inventoryChange;
 
-
+	
 protected:
-	FInventory inventory;
 
+	FInventory inventory;
 };

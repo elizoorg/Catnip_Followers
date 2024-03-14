@@ -3,7 +3,10 @@
 
 #include "SPlayerPawn.h"
 
+#include "ResourceInterface.h"
 #include "SPlayerController.h"
+#include "StorageInterface.h"
+#include "Usable.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -140,7 +143,31 @@ void ASPlayerPawn::MouseLeftReleased()
 
 void ASPlayerPawn::MouseRightReleased()
 {
-	CommandLocation = FVector(1500, 1900, 0);
+
+	if (UWorld* World = GetWorld())
+	{
+		FVector WorldLocation, WorldDirection;
+		Cast<ASPlayerController>(GetController())->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+		FVector End = WorldDirection * 1000000.0f + WorldLocation;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+		FHitResult Hit;
+		if (World->LineTraceSingleByChannel(Hit, WorldLocation, End, ECC_Visibility, Params))
+		{
+			
+				CommandLocation = Hit.ImpactPoint;
+				if (AActor* HitActor = Hit.GetActor())
+				{
+					CommandTarget = HitActor;
+				}
+			
+			
+			
+			
+		}
+	}
+	FString  string = GetDebugName(CommandTarget);
+	UE_LOG(LogTemp, Warning, TEXT("%s"),*string);
 	Command();
 }
 
@@ -233,12 +260,20 @@ void ASPlayerPawn::CameraBounds()
 FCommandData ASPlayerPawn::CreateCommandData(const ECommandType Type) const
 {
 	FRotator CommandRotation = FRotator::ZeroRotator;
-	return FCommandData(CommandLocation, CommandRotation, Type);
+	return FCommandData(CommandLocation, CommandRotation, Type,CommandTarget);
 
 }
 
 void ASPlayerPawn::Command()
 {
-	Cast<ASPlayerController>(GetController())->CommandSelected(CreateCommandData(ECommandType::MOVE));
+	IUsable* usable = Cast<IUsable>(CommandTarget);
+	if(usable)
+	{
+		Cast<ASPlayerController>(GetController())->CommandSelected(CreateCommandData(usable->Use()));
+	}
+	else
+	{
+		Cast<ASPlayerController>(GetController())->CommandSelected(CreateCommandData(ECommandType::MOVE));
+	}
 }
 

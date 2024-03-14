@@ -12,7 +12,8 @@ enum class EResourse : uint8
 	Wood,
 	Stone,
 	Gold,
-	Food
+	Food,
+	Ingot
 };
 
 
@@ -61,7 +62,49 @@ public:
 		return NULL;
 	}
 };
+UENUM(BlueprintType)
+enum class  ECharacterType : uint8 {
+	Worker,
+	Animal,
+	End
+};
 
+
+USTRUCT(BlueprintType)
+struct FUnitStats
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float  currentHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float  maxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	FString unitName;
+
+};
+
+
+
+USTRUCT(BlueprintType)
+struct FCharacterStats : public FUnitStats
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32  carryWeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	ECharacterType characterType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	int32  gatherAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	FInventory inventory;
+};
 
 UCLASS()
 class CATNIP_FOLLOWERS_API UEnums : public UObject

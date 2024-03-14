@@ -15,7 +15,10 @@ enum class ECommandType
 	WAIT,
 	MOVE,
 	ATTACK,
-	GATHER
+	GATHER,
+	DEPOSIT,
+	GRAB,
+	CONVERT
 };
 
 USTRUCT(BlueprintType)

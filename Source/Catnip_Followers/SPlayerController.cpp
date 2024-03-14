@@ -90,7 +90,24 @@ void ASPlayerController::CommandSelected(FCommandData CommandData)
 	{
 		if (ACatnip_FollowersCharacter* SelectedCharacter = Cast<ACatnip_FollowersCharacter>(Selected[i]))
 		{
-			SelectedCharacter->CommandMove(CommandData);
+			switch(CommandData.Type)
+			{
+			case ECommandType::MOVE:
+				SelectedCharacter->CommandMove(CommandData);
+				break;
+			case ECommandType::GATHER:
+					SelectedCharacter->CommandGather(CommandData);
+					break;
+			case ECommandType::DEPOSIT:
+				SelectedCharacter->CommandDeposit(CommandData);
+				break;
+			case ECommandType::CONVERT:
+				SelectedCharacter->CommandConvert(CommandData);
+				break;
+			default:
+				break;
+			}
+			
 		}
 	}
 }

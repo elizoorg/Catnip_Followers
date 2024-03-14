@@ -9,3 +9,8 @@ AAGold::AAGold()
 	stats.resourceType = EResourse::Gold;
 }
 
+ECommandType AAGold::Use()
+{
+	return ECommandType::GATHER;
+}
+

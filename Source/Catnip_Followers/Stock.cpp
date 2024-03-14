@@ -36,3 +36,8 @@ void AStock::HighLight(const bool Highlight)
 		}
 	}
 }
+
+ECommandType AStock::Use()
+{
+	return ECommandType::DEPOSIT;
+}

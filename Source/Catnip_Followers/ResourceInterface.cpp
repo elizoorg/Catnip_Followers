@@ -6,7 +6,7 @@
 
 FString IResourceInterface::GetEnumName()
 {
-	return UEnums::EnumToString(TEXT("EResourceType"), static_cast<uint8>(GetType()));
+	return UEnums::EnumToString(TEXT("EResourse"), static_cast<uint8>(GetType()));
 }
 
 void IResourceInterface::TakeResources(int32 amount)

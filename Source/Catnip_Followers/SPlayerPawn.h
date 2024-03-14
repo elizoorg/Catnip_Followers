@@ -127,6 +127,8 @@ private:
 	UPROPERTY()
 	FVector CommandLocation;
 
+	UPROPERTY()
+	AActor* CommandTarget;
 
 
 };

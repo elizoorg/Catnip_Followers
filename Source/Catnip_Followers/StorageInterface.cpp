@@ -43,5 +43,4 @@ void IStorageInterface::RemoveItem(FString name, int32 amount)
 			break;
 		}
 	}
-	inventoryChange.Broadcast(inventory);
 }
